@@ -1,4 +1,4 @@
-I buid this application, build by tasnim
+I build this application, build by tasnim
 my github link:https://github.com/tmaulidi-arch/student-finance-tracker
 and this is the link of my webside: https://tmaulidi-arch.github.io/student-finance-tracker/
 
