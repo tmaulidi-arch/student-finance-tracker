@@ -1,7 +1,7 @@
 I build this application, build by tasnim
 my github link:https://github.com/tmaulidi-arch/student-finance-tracker
 and this is the link of my webside: https://tmaulidi-arch.github.io/student-finance-tracker/
-
+and my link video https://youtu.be/LxHw3OmLVCc?si=Y2fE3bZQuIUDX0Rp
 STUDENT FINANCE TRACKER
 A lightweight, browser-based personal finance app built for students. Track your spending, set a monthly budget cap, and review your transaction history and no account or server needed. All data is saved directly in your browser.
 
