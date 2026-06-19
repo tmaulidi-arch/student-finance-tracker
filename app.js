@@ -1,25 +1,13 @@
-// ============================================================
-// STUDENT FINANCE TRACKER - Main JavaScript
-// Simple and beginner-friendly version
-// ============================================================
-
-// ----- STORAGE KEYS -----
 const STORAGE_KEY = 'finance_tracker_data';
 const CAP_KEY = 'finance_cap';
 
-// ----- STATE VARIABLES -----
 let transactions = [];
 let capAmount = null;
 let editingId = null;
-let sortAsc = false; // false = newest first, true = oldest first
+let sortAsc = false;
 let searchTerm = '';
 
-// ============================================================
-// 1. LOAD DATA FROM localStorage OR seed.json
-// ============================================================
-
 function loadData() {
-    // First, try to get data from localStorage
     const savedData = localStorage.getItem(STORAGE_KEY);
     
     if (savedData) {
@@ -35,13 +23,8 @@ function loadData() {
         }
     }
     
-    // If no data in localStorage, try to load from seed.json
     loadSeedFromFile();
 }
-
-// ============================================================
-// 2. LOAD FROM seed.json FILE
-// ============================================================
 
 function loadSeedFromFile() {
     fetch('seed.json')
@@ -58,7 +41,6 @@ function loadSeedFromFile() {
                 render();
                 console.log('Loaded data from seed.json');
             } else {
-                // If seed.json is empty, use hardcoded data
                 useHardcodedData();
             }
         })
@@ -67,10 +49,6 @@ function loadSeedFromFile() {
             useHardcodedData();
         });
 }
-
-// ============================================================
-// 3. HARDCODED SAMPLE DATA (fallback)
-// ============================================================
 
 function useHardcodedData() {
     transactions = [
@@ -149,10 +127,6 @@ function useHardcodedData() {
     render();
 }
 
-// ============================================================
-// 4. SAVE DATA TO localStorage
-// ============================================================
-
 function saveData() {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(transactions));
     
@@ -163,17 +137,9 @@ function saveData() {
     }
 }
 
-// ============================================================
-// 5. GENERATE UNIQUE ID
-// ============================================================
-
 function generateId() {
     return 'txn_' + Date.now() + '_' + Math.random().toString(36).slice(2, 6);
 }
-
-// ============================================================
-// 6. SHOW MESSAGES
-// ============================================================
 
 function showMessage(message) {
     const status = document.getElementById('form-status');
@@ -195,20 +161,13 @@ function showSettingsMessage(message) {
     }, 4000);
 }
 
-// ============================================================
-// 7. VALIDATION FUNCTIONS
-// ============================================================
-
 function validateDescription(text) {
-    // Remove extra spaces
     const cleaned = text.trim().replace(/\s+/g, ' ');
     
-    // Check for leading/trailing spaces
     if (!/^\S(?:.*\S)?$/.test(cleaned)) {
         return { valid: false, message: 'No leading or trailing spaces allowed.' };
     }
     
-    // Check for duplicate words
     const words = cleaned.split(' ');
     for (let i = 0; i < words.length - 1; i++) {
         if (words[i].toLowerCase() === words[i + 1].toLowerCase()) {
@@ -220,7 +179,6 @@ function validateDescription(text) {
 }
 
 function validateAmount(value) {
-    // Check if it's a positive number with up to 2 decimals
     if (!/^(0|[1-9]\d*)(\.\d{1,2})?$/.test(value)) {
         return { valid: false, message: 'Enter a positive number (e.g., 12.50).' };
     }
@@ -228,7 +186,6 @@ function validateAmount(value) {
 }
 
 function validateDate(value) {
-    // Check YYYY-MM-DD format
     if (!/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/.test(value)) {
         return { valid: false, message: 'Use YYYY-MM-DD format.' };
     }
@@ -236,19 +193,13 @@ function validateDate(value) {
 }
 
 function validateCategory(value) {
-    // Only letters, spaces, and hyphens
     if (!/^[A-Za-z]+(?:[ -][A-Za-z]+)*$/.test(value)) {
         return { valid: false, message: 'Only letters, spaces, and hyphens allowed.' };
     }
     return { valid: true };
 }
 
-// ============================================================
-// 8. RENDER EVERYTHING
-// ============================================================
-
 function render() {
-    // --- Get search value ---
     const searchValue = document.getElementById('search-input').value.trim();
     let searchRegex = null;
     
@@ -260,7 +211,6 @@ function render() {
         }
     }
     
-    // --- Filter transactions ---
     let filtered = transactions;
     if (searchRegex) {
         filtered = transactions.filter(function(transaction) {
@@ -270,30 +220,25 @@ function render() {
         });
     }
     
-    // --- Sort transactions ---
     filtered.sort(function(a, b) {
         let valueA = a.date;
         let valueB = b.date;
         
         if (sortAsc) {
-            // Oldest first
             if (valueA < valueB) return -1;
             if (valueA > valueB) return 1;
             return 0;
         } else {
-            // Newest first
             if (valueA > valueB) return -1;
             if (valueA < valueB) return 1;
             return 0;
         }
     });
     
-    // --- Get DOM elements ---
     const tbody = document.getElementById('records-body');
     const cardsContainer = document.getElementById('mobile-cards');
     const emptyMsg = document.getElementById('empty-msg');
     
-    // --- Check if there are any transactions ---
     if (filtered.length === 0) {
         tbody.innerHTML = '';
         cardsContainer.innerHTML = '';
@@ -303,14 +248,12 @@ function render() {
     
     emptyMsg.style.display = 'none';
     
-    // --- Build table rows ---
     let tableHTML = '';
     for (let i = 0; i < filtered.length; i++) {
         const t = filtered[i];
         let description = t.description;
         let category = t.category;
         
-        // Highlight search matches
         if (searchRegex) {
             description = description.replace(searchRegex, function(match) {
                 return '<mark>' + match + '</mark>';
@@ -335,7 +278,6 @@ function render() {
     }
     tbody.innerHTML = tableHTML;
     
-    // --- Build mobile cards ---
     let cardsHTML = '';
     for (let i = 0; i < filtered.length; i++) {
         const t = filtered[i];
@@ -366,7 +308,6 @@ function render() {
     }
     cardsContainer.innerHTML = cardsHTML;
     
-    // --- Attach event listeners to edit/delete buttons ---
     const allButtons = document.querySelectorAll('[data-id]');
     for (let i = 0; i < allButtons.length; i++) {
         const button = allButtons[i];
@@ -375,7 +316,6 @@ function render() {
             const action = this.dataset.action;
             
             if (action === 'delete') {
-                // Delete transaction
                 if (confirm('Delete this transaction?')) {
                     const newTransactions = [];
                     for (let j = 0; j < transactions.length; j++) {
@@ -389,7 +329,6 @@ function render() {
                     showMessage('Transaction deleted.');
                 }
             } else {
-                // Edit transaction - fill the form
                 let transactionToEdit = null;
                 for (let j = 0; j < transactions.length; j++) {
                     if (transactions[j].id === id) {
@@ -413,28 +352,20 @@ function render() {
         });
     }
     
-    // --- Update stats and cap ---
     updateStats();
     updateCapMessage();
 }
 
-// ============================================================
-// 9. UPDATE STATISTICS
-// ============================================================
-
 function updateStats() {
-    // Total number of records
     const total = transactions.length;
     document.getElementById('total-records').textContent = total;
     
-    // Total amount spent
     let sum = 0;
     for (let i = 0; i < transactions.length; i++) {
         sum = sum + transactions[i].amount;
     }
     document.getElementById('total-amount').textContent = sum.toFixed(2);
     
-    // Top category
     const categoryCount = {};
     for (let i = 0; i < transactions.length; i++) {
         const cat = transactions[i].category;
@@ -455,7 +386,6 @@ function updateStats() {
     }
     document.getElementById('top-category').textContent = topCategory;
     
-    // Last 7 days spending
     const now = new Date();
     const weekAgo = new Date(now);
     weekAgo.setDate(now.getDate() - 7);
@@ -469,10 +399,6 @@ function updateStats() {
     }
     document.getElementById('week-trend').textContent = weekSum.toFixed(2);
 }
-
-// ============================================================
-// 10. UPDATE CAP MESSAGE
-// ============================================================
 
 function updateCapMessage() {
     const capArea = document.getElementById('cap-area');
@@ -502,48 +428,38 @@ function updateCapMessage() {
     capArea.textContent = message;
 }
 
-// ============================================================
-// 11. FORM SUBMIT (Add / Edit)
-// ============================================================
-
 document.getElementById('transaction-form').addEventListener('submit', function(event) {
     event.preventDefault();
     
-    // Get form values
     const descriptionRaw = document.getElementById('desc-input').value;
     const amountRaw = document.getElementById('amount-input').value;
     const category = document.getElementById('category-select').value;
     const dateRaw = document.getElementById('date-input').value;
     
-    // Clear previous error messages
     document.getElementById('desc-error').textContent = '';
     document.getElementById('amount-error').textContent = '';
     document.getElementById('date-error').textContent = '';
     
     let isValid = true;
     
-    // Validate description
     const descResult = validateDescription(descriptionRaw);
     if (!descResult.valid) {
         document.getElementById('desc-error').textContent = descResult.message;
         isValid = false;
     }
     
-    // Validate amount
     const amountResult = validateAmount(amountRaw);
     if (!amountResult.valid) {
         document.getElementById('amount-error').textContent = amountResult.message;
         isValid = false;
     }
     
-    // Validate date
     const dateResult = validateDate(dateRaw);
     if (!dateResult.valid) {
         document.getElementById('date-error').textContent = dateResult.message;
         isValid = false;
     }
     
-    // Validate category
     const categoryResult = validateCategory(category);
     if (!categoryResult.valid) {
         document.getElementById('desc-error').textContent = categoryResult.message;
@@ -555,7 +471,6 @@ document.getElementById('transaction-form').addEventListener('submit', function(
         return;
     }
     
-    // If editing
     if (editingId) {
         for (let i = 0; i < transactions.length; i++) {
             if (transactions[i].id === editingId) {
@@ -572,7 +487,6 @@ document.getElementById('transaction-form').addEventListener('submit', function(
         document.getElementById('cancel-edit').style.display = 'none';
         showMessage('Transaction updated.');
     } else {
-        // Add new transaction
         const newTransaction = {
             id: generateId(),
             description: descResult.value,
@@ -590,10 +504,6 @@ document.getElementById('transaction-form').addEventListener('submit', function(
     document.getElementById('date-input').value = new Date().toISOString().slice(0, 10);
 });
 
-// ============================================================
-// 12. CANCEL EDIT
-// ============================================================
-
 document.getElementById('cancel-edit').addEventListener('click', function() {
     editingId = null;
     document.getElementById('submit-btn').textContent = 'Add Transaction';
@@ -602,10 +512,6 @@ document.getElementById('cancel-edit').addEventListener('click', function() {
     document.getElementById('transaction-form').reset();
     document.getElementById('date-input').value = new Date().toISOString().slice(0, 10);
 });
-
-// ============================================================
-// 13. SEARCH FUNCTIONALITY
-// ============================================================
 
 document.getElementById('search-input').addEventListener('input', function() {
     render();
@@ -616,19 +522,11 @@ document.getElementById('clear-search').addEventListener('click', function() {
     render();
 });
 
-// ============================================================
-// 14. SORT FUNCTIONALITY
-// ============================================================
-
 document.getElementById('sort-btn').addEventListener('click', function() {
     sortAsc = !sortAsc;
     this.textContent = 'Sort by Date ' + (sortAsc ? '▲' : '▼');
     render();
 });
-
-// ============================================================
-// 15. SETTINGS: SET CAP
-// ============================================================
 
 document.getElementById('set-cap-btn').addEventListener('click', function() {
     const capValue = parseFloat(document.getElementById('cap-input').value);
@@ -644,10 +542,6 @@ document.getElementById('set-cap-btn').addEventListener('click', function() {
     showSettingsMessage('Cap set to $' + capValue.toFixed(2));
 });
 
-// ============================================================
-// 16. SETTINGS: EXPORT JSON
-// ============================================================
-
 document.getElementById('export-json').addEventListener('click', function() {
     const dataString = JSON.stringify(transactions, null, 2);
     const blob = new Blob([dataString], { type: 'application/json' });
@@ -661,10 +555,6 @@ document.getElementById('export-json').addEventListener('click', function() {
     URL.revokeObjectURL(url);
     showSettingsMessage('Export complete.');
 });
-
-// ============================================================
-// 17. SETTINGS: IMPORT JSON
-// ============================================================
 
 document.getElementById('import-trigger').addEventListener('click', function() {
     document.getElementById('import-file').click();
@@ -683,7 +573,6 @@ document.getElementById('import-file').addEventListener('change', function(event
                 throw new Error('File must contain an array.');
             }
             
-            // Check if each item has required fields
             for (let i = 0; i < data.length; i++) {
                 if (!data[i].id || data[i].description === undefined || data[i].amount === undefined) {
                     throw new Error('Each transaction needs id, description, and amount.');
@@ -702,20 +591,12 @@ document.getElementById('import-file').addEventListener('change', function(event
     this.value = '';
 });
 
-// ============================================================
-// 18. SETTINGS: LOAD SAMPLE DATA
-// ============================================================
-
 document.getElementById('seed-btn').addEventListener('click', function() {
     if (confirm('Load sample data? This will replace your current transactions.')) {
         loadSeedFromFile();
         showSettingsMessage('Sample data loaded.');
     }
 });
-
-// ============================================================
-// 19. SETTINGS: CLEAR ALL
-// ============================================================
 
 document.getElementById('clear-all').addEventListener('click', function() {
     if (confirm('Delete ALL transactions? This cannot be undone.')) {
@@ -726,10 +607,6 @@ document.getElementById('clear-all').addEventListener('click', function() {
     }
 });
 
-// ============================================================
-// 20. LOAD CAP FROM localStorage
-// ============================================================
-
 function loadCap() {
     const savedCap = localStorage.getItem(CAP_KEY);
     if (savedCap !== null) {
@@ -739,18 +616,10 @@ function loadCap() {
     }
 }
 
-// ============================================================
-// 21. START THE APP
-// ============================================================
-
-// Set default date to today
 const todayDate = new Date().toISOString().slice(0, 10);
 document.getElementById('date-input').value = todayDate;
 
-// Load cap from localStorage
 loadCap();
-
-// Load data (will try localStorage, then seed.json, then hardcoded)
 loadData();
 
 console.log('Student Finance Tracker loaded!');
