@@ -21,14 +21,12 @@
     </header>
 
     <main id="main-content">
-        <!-- ABOUT -->
         <section id="about" aria-labelledby="about-heading">
             <h2 id="about-heading">About</h2>
             <p><strong>Student Finance Tracker</strong> — it help to track your spendings , set your own budget cap, and it really used to search all transactions. All data will besaved in your own browser.</p>
             <p><a href="https://github.com/tmaulidi-arch" target="_blank">this is my GitHub</a> My Student Email account: t.maulidi@alustudent.com</p>
         </section>
 
-        <!-- DASHBOARD / STATS -->
         <section id="dashboard" aria-labelledby="stats-heading">
             <h2 id="stats-heading">Dashboard</h2>
             <div id="stats-container">
@@ -44,7 +42,6 @@
             </div>
         </section>
 
-        <!-- RECORDS TABLE + SEARCH + SORT -->
         <section id="records" aria-labelledby="records-heading">
             <h2 id="records-heading">Transactions</h2>
             <div class="search-sort-bar">
@@ -76,20 +73,24 @@
             <p id="empty-msg" class="empty-msg">No records found. Add your first transaction!</p>
         </section>
 
-        <!-- ADD / EDIT FORM -->
         <section id="add-form" aria-labelledby="form-heading">
             <h2 id="form-heading">Add / Edit Transaction</h2>
             <form id="transaction-form" novalidate>
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="desc-input">description </label>
+                        <label for="desc-input">Description </label>
                         <input type="text" id="desc-input" placeholder="e.g. Lunch at cafe" required />
                         <div id="desc-error" class="error-msg"></div>
                     </div>
                     <div class="form-group">
-                        <label for="amount-input">amount ($) </label>
+                        <label for="amount-input">Amount ($) </label>
                         <input type="text" id="amount-input" placeholder="12.50" required />
                         <div id="amount-error" class="error-msg"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="date-input">Date </label>
+                        <input type="date" id="date-input" required />
+                        <div id="date-error" class="error-msg"></div>
                     </div>
                     <div class="form-group">
                         <label for="category-select">Category </label>
@@ -102,21 +103,15 @@
                             <option value="Other">Other</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label for="date-input">Date </label>
-                        <input type="date" id="date-input" required />
-                        <div id="date-error" class="error-msg"></div>
-                    </div>
                 </div>
                 <div class="form-actions">
-                    <button type="submit" id="submit-btn">add transaction</button>
+                    <button type="submit" id="submit-btn">Add Transaction</button>
                     <button type="reset" class="secondary" id="cancel-edit" style="display:none;">Cancel Edit</button>
                 </div>
                 <div id="form-status" role="status" aria-live="polite" class="form-status"></div>
             </form>
         </section>
 
-        <!-- SETTINGS -->
         <section id="settings" aria-labelledby="settings-heading">
             <h2 id="settings-heading">Settings</h2>
             <div class="settings-grid">
