@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>students finance tracker</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header role="banner">
+        <h1>Finance Tracker</h1>
+        <nav role="navigation" aria-label="Main navigation">
+            <a href="#about" aria-current="page">About</a>
+            <a href="#dashboard">Dashboard</a>
+            <a href="#records">Records</a>
+            <a href="#add-form">Add</a>
+            <a href="#settings">Settings</a>
+        </nav>
+    </header>
+
+    <main id="main-content">
+        <!-- ABOUT -->
+        <section id="about" aria-labelledby="about-heading">
+            <h2 id="about-heading">About</h2>
+            <p><strong>Student Finance Tracker</strong> — it help to track your spendings , set your own budget cap, and it really used to search all transactions. All data will besaved in your own browser.</p>
+            <p><a href="https://github.com/tmaulidi-arch" target="_blank">this is my GitHub</a> My Student Email account: t.maulidi@alustudent.com</p>
+        </section>
+
+        <!-- DASHBOARD / STATS -->
+        <section id="dashboard" aria-labelledby="stats-heading">
+            <h2 id="stats-heading">Dashboard</h2>
+            <div id="stats-container">
+                <div class="stats-grid" id="stats-grid">
+                    <div class="stat-box"><span class="number" id="total-records">0</span><br />Total Records</div>
+                    <div class="stat-box"><span class="number" id="total-amount">0.00</span><br />Total Spent ($)</div>
+                    <div class="stat-box"><span class="number" id="top-category">-</span><br />Top Category</div>
+                    <div class="stat-box"><span class="number" id="week-trend">0.00</span><br />Last 7 Days ($)</div>
+                </div>
+                <div id="cap-area" class="cap-message" role="status" aria-live="polite">
+                    Set a budget cap in Settings
+                </div>
+            </div>
+        </section>
+
+        <!-- RECORDS TABLE + SEARCH + SORT -->
+        <section id="records" aria-labelledby="records-heading">
+            <h2 id="records-heading">Transactions</h2>
+            <div class="search-sort-bar">
+                <div class="search-group">
+                    <label for="search-input" class="visually-hidden">Search transactions</label>
+                    <input type="text" id="search-input" placeholder="Search (e.g. coffee, food)" />
+                    <div id="search-error" class="error-msg" role="alert"></div>
+                </div>
+                <div class="sort-group">
+                    <button id="sort-btn" class="secondary">Sort by Date ▼</button>
+                    <button id="clear-search" class="secondary">Clear</button>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table aria-label="Transaction records">
+                    <thead>
+                        <tr>
+                            <th data-sort="description">Description</th>
+                            <th data-sort="amount">Amount ($)</th>
+                            <th data-sort="category">Category</th>
+                            <th data-sort="date">Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="records-body"></tbody>
+                </table>
+            </div>
+            <div id="mobile-cards" class="mobile-cards" role="list"></div>
+            <p id="empty-msg" class="empty-msg">No records found. Add your first transaction!</p>
+        </section>
+
+        <!-- ADD / EDIT FORM -->
+        <section id="add-form" aria-labelledby="form-heading">
+            <h2 id="form-heading">Add / Edit Transaction</h2>
+            <form id="transaction-form" novalidate>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="desc-input">description *</label>
+                        <input type="text" id="desc-input" placeholder="e.g. Lunch at cafe" required />
+                        <div id="desc-error" class="error-msg"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="amount-input">amount ($) *</label>
+                        <input type="text" id="amount-input" placeholder="12.50" required />
+                        <div id="amount-error" class="error-msg"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="category-select">Category *</label>
+                        <select id="category-select">
+                            <option value="Food">Food</option>
+                            <option value="Books">Books</option>
+                            <option value="Transport">Transport</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Fees">Fees</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="date-input">Date *</label>
+                        <input type="date" id="date-input" required />
+                        <div id="date-error" class="error-msg"></div>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" id="submit-btn">add transaction</button>
+                    <button type="reset" class="secondary" id="cancel-edit" style="display:none;">Cancel Edit</button>
+                </div>
+                <div id="form-status" role="status" aria-live="polite" class="form-status"></div>
+            </form>
+        </section>
+
+        <!-- SETTINGS -->
+        <section id="settings" aria-labelledby="settings-heading">
+            <h2 id="settings-heading">Settings</h2>
+            <div class="settings-grid">
+                <div class="settings-group">
+                    <label for="cap-input"> budget Cap by month ($)</label>
+                    <input type="number" id="cap-input" placeholder="200" min="0" step="0.01" />
+                    <button id="set-cap-btn">Set Cap</button>
+                </div>
+                <div class="settings-group">
+                    <label>data management</label>
+                    <div class="button-group">
+                        <button id="export-json" class="secondary">export JSON</button>
+                        <button id="import-trigger" class="secondary">import JSON</button>
+                        <input type="file" id="import-file" accept=".json" style="display:none;" />
+                        <button id="clear-all" class="danger">clear all</button>
+                    </div>
+                </div>
+            </div>
+            <div id="settings-status" role="status" aria-live="polite" class="settings-status"></div>
+        </section>
+    </main>
+
+    <footer role="contentinfo">
+        <p>Student Finance Tracker and middot ,all data saved locally in your browser</p>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
